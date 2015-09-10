@@ -21,7 +21,7 @@ public class LocUtilExample {
 	 */
 	public static void main(String[] args) {
 		
-		String offlinePath = "data/MU.1.5meters.offline.trace", onlinePath = "data/MU.1.5meters.online.trace";
+		String offlinePath = "data/MU.1.5meters.offline__170009_1.trace", onlinePath = "data/MU.1.5meters.online__170010_1.trace";
 		
 		//Construct parsers
 		File offlineFile = new File(offlinePath);
