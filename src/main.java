@@ -1,5 +1,0 @@
-//penis 
-
-public class main {
-
-}
