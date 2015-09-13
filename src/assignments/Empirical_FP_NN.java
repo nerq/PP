@@ -12,8 +12,6 @@ import org.pi4.locutil.trace.TraceEntry;
 public class Empirical_FP_NN{
 
 	public static void main(String[] args){
-		double ss1, e1, ss2, e2, ss3, e3;
-		
 		String offlinePath = "data/MU.1.5meters.offline__170009_1.trace";
 		String onlinePath = "data/MU.1.5meters.online__170010_1.trace";
 		
@@ -37,8 +35,8 @@ public class Empirical_FP_NN{
 			tg.generate();
 			
 			//Iterate the trace generated from the offline file
-			List<TraceEntry> offlineTrace = tg.getOffline();			
-			for(TraceEntry entry: offlineTrace) {
+			List<TraceEntry> onlineTrace = tg.getOnline();			
+			for(TraceEntry entry: onlineTrace) {
 				//Print out coordinates for the collection point and the number of signal strength samples
 				String StrongestAP = entry.getSignalStrengthSamples().getSortedAccessPoints().subList(0, 1).toString()
 					.replace("[", "")  //remove the right bracket
