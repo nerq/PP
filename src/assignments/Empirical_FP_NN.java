@@ -132,11 +132,12 @@ public class Empirical_FP_NN{
 		}
 		int lower1 = 0;
 		int upper1 = 11;
-		int lower2 = 0;
-		int upper2 = 11;
+		int lower2 = 2;
+		int upper2 = 13;
 		int counter = 25;
-		int counter2 = 25; 
+		int counter2 = 25;
 		double distance, bestDistance = 200;
+		double bestX = 0, bestY = 0;
 		while(counter > 0){
 			while(counter2 > 0){
 				distance = Helpers.EuclidianDistanceAll(ComparisonList.subList(lower1, upper1), RadioMap.subList(lower2, upper2));
@@ -145,6 +146,8 @@ public class Empirical_FP_NN{
 				System.out.println(distance);
 				if(distance <= bestDistance){
 					bestDistance = distance;
+					bestX = RadioMap.get(lower2-2);
+					bestY = RadioMap.get(lower2-1);
 					}
 				counter2 --;
 			}
@@ -155,6 +158,7 @@ public class Empirical_FP_NN{
 			upper2 = 11;
 			counter2 = 25;
 			System.out.println("BestDistance: " + bestDistance);
+			System.out.println("Current location?: " + bestX + bestY);
 			bestDistance = 200;
 		}
 	}

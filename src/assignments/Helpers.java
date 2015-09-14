@@ -12,6 +12,60 @@ import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 
 public class Helpers {
+	public static List<Double> radioMap2(){
+		List<Double> RadioMap = new ArrayList<Double>();
+		
+		String AP1 = "00:14:BF:B1:7C:54";
+		String AP2 = "00:16:B6:B7:5D:8F";
+		String AP3 = "00:14:BF:B1:7C:57";
+		String AP4 = "00:14:BF:B1:97:8D";
+		String AP5 = "00:16:B6:B7:5D:9B";
+		String AP6 = "00:14:6C:62:CA:A4";
+		String AP7 = "00:14:BF:3B:C7:C6";
+		String AP8 = "00:14:BF:B1:97:8A";
+		String AP9 = "00:14:BF:B1:97:81";
+		String AP10 = "00:16:B6:B7:5D:8C";
+		String AP11 = "00:11:88:28:5E:E0";
+		
+		Double StrengthAP1, StrengthAP2, StrengthAP3, StrengthAP4, StrengthAP5, StrengthAP6, StrengthAP7, StrengthAP8, StrengthAP9, StrengthAP10, StrengthAP11;  
+		
+		String offlinePath = "data/MU.1.5meters.offline__170009_1.trace";
+		String onlinePath = "data/MU.1.5meters.online__170010_1.trace";
+		
+		//Construct parsers
+		File offlineFile = new File(offlinePath);
+		Parser offlineParser = new Parser(offlineFile);
+		System.out.println("Offline File: " +  offlineFile.getAbsoluteFile());
+				
+		File onlineFile = new File(onlinePath);
+		Parser onlineParser = new Parser(onlineFile);
+		System.out.println("Online File: " + onlineFile.getAbsoluteFile());
+				
+		//Construct trace generator
+		TraceGenerator tg;
+		try {
+			int offlineSize = 25;
+			int onlineSize = 5;
+			tg = new TraceGenerator(offlineParser, onlineParser,offlineSize,onlineSize);
+					
+			//Generate traces from parsed files
+			tg.generate();
+			
+			//Iterate the trace generated from the offline file
+			List<TraceEntry> offlineTrace = tg.getOffline();			
+			for(TraceEntry entry: offlineTrace) {
+			entry.getSignalStrengthSamples();	
+			}
+			
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(RadioMap);
+		return RadioMap;
+	}
+	
 	
 	public static List<Double> radioMap(){
 		List<Double> RadioMap = new ArrayList<Double>();
@@ -56,6 +110,8 @@ public class Helpers {
 			List<TraceEntry> offlineTrace = tg.getOffline();			
 			for(TraceEntry entry: offlineTrace) {
 				String CurrentList = entry.getSignalStrengthSamples().getSortedAccessPoints().toString();
+				Double currentX = entry.getGeoPosition().getX();
+				Double currentY = entry.getGeoPosition().getY();
 				if(CurrentList.contains(AP1)){
 					StrengthAP1 = entry.getSignalStrengthSamples().getAverageSignalStrength(MACAddress.parse(AP1));
 				}
@@ -111,6 +167,8 @@ public class Helpers {
 				}
 				else{StrengthAP11 = (double) -96;}
 				
+				RadioMap.add(currentX);
+				RadioMap.add(currentY);
 				RadioMap.add(StrengthAP1);
 				RadioMap.add(StrengthAP2);
 				RadioMap.add(StrengthAP3);
@@ -122,7 +180,6 @@ public class Helpers {
 				RadioMap.add(StrengthAP9);
 				RadioMap.add(StrengthAP10);
 				RadioMap.add(StrengthAP11);
-				
 			}
 			
 		} catch (NumberFormatException e) {
@@ -130,7 +187,7 @@ public class Helpers {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println(RadioMap);
 		return RadioMap;
 	} 
 	
@@ -208,6 +265,31 @@ public class Helpers {
 			System.out.println("No mac adress found");
 		}
 		return GeoPosAP;
+	}
+	
+	public static TraceGenerator createTraceGenerator(int offlineSize, int onlineSize)
+	{
+		String offlinePath = "data/MU.1.5meters.offline__170009_1.trace", onlinePath = "data/MU.1.5meters.online__170010_1.trace";
+		
+		//Construct parsers
+		File offlineFile = new File(offlinePath);
+		Parser offlineParser = new Parser(offlineFile);
+		
+		File onlineFile = new File(onlinePath);
+		Parser onlineParser = new Parser(onlineFile);
+		
+		//Construct trace generator
+		TraceGenerator tg = null;
+		try {
+			tg = new TraceGenerator(offlineParser, onlineParser,offlineSize,onlineSize);
+				
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return tg;
 	}
 	
 }
