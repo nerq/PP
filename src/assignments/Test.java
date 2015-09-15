@@ -78,6 +78,7 @@ public class Test {
 			}
 		}
 		
+		
 		for(Entry<GeoPosition, Map<MACAddress, Double>> value : onlineMap.entrySet()){
 			ArrayList<Double> onlineValues = new ArrayList<Double>();
 			for(Entry<MACAddress, Double> value2 : value.getValue().entrySet()){
