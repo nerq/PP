@@ -15,7 +15,7 @@ import org.pi4.locutil.trace.SignalStrengthSamples;
 import org.pi4.locutil.trace.TraceEntry;
 
 public class Helpers {
-	public Map<GeoPosition, Map<MACAddress, ArrayList<Double>>> radioMap;
+	/*public Map<GeoPosition, Map<MACAddress, ArrayList<Double>>> radioMap;
 	
 	public Helpers(){
 		radioMap = new HashMap<GeoPosition, Map<MACAddress, ArrayList<Double>>>();
@@ -50,7 +50,7 @@ public class Helpers {
 			}
 		radioMap.put(gp, macMap);
 	}
-	
+	*/
 	public static double EuclidianDistance(double ss1, double e1, double ss2, double e2, double ss3, double e3){
 		return Math.sqrt(Math.pow(ss1 - e1,2) + Math.pow(ss2 - e2,2) + Math.pow(ss3 - e3, 2));
 	}
