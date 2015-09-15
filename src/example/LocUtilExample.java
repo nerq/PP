@@ -46,15 +46,15 @@ public class LocUtilExample {
 			List<TraceEntry> offlineTrace = tg.getOffline();			
 			for(TraceEntry entry: offlineTrace) {
 				//Print out coordinates for the collection point and the number of signal strength samples
-				System.out.println("OFFLINE: " + entry.getGeoPosition().toString() + " - " + entry.getSignalStrengthSamples().size() + " - " + entry.getSignalStrengthSamples().toString());				
+				System.out.println("OFFLINE: " + entry.getSignalStrengthSamples().keySet());				
 			}
 			
 			//Iterate the trace generated from the online file
-			List<TraceEntry> onlineTrace = tg.getOnline();			
+			/*List<TraceEntry> onlineTrace = tg.getOnline();			
 			for(TraceEntry entry: onlineTrace) {
 				//Print out coordinates for the collection point and the number of signal strength samples
 				System.out.println("ONLINE: " + entry.getGeoPosition().toString() + " - " + entry.getSignalStrengthSamples().size() + " - " + entry.getSignalStrengthSamples());
-			}
+			}*/
 			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

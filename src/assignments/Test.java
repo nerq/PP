@@ -17,9 +17,9 @@ public class Test {
 		System.out.println("start!");
 		TraceGenerator tg = Helpers.createTraceGenerator(25, 5);
 		tg.generate();
+		Helpers mapBuilder = new Helpers();
 		List<TraceEntry> onlineTrace = tg.getOnline();
 		List<TraceEntry> offlineTrace = tg.getOffline();
-		HashMap<MACAddress, Double> radioMap = new HashMap<MACAddress, Double>();
 		
 		for(TraceEntry entry: offlineTrace) {
 			MACAddress AP1 = MACAddress.parse("00:14:BF:B1:7C:54");
@@ -35,16 +35,18 @@ public class Test {
 			MACAddress AP11 = MACAddress.parse("00:11:88:28:5E:E0");
 			Double SSAP1, SSAP2, SSAP3, SSAP4, SSAP5, SSAP6, SSAP7, SSAP8, SSAP9, SSAP10, SSAP11;
 			
-			if(entry.getSignalStrengthSamples().containsKey(AP1)){
-				SSAP1 = entry.getSignalStrengthSamples().getAverageSignalStrength(AP1);
-				entry.getGeoPosition();
-			}
-			else{
-				SSAP1 = (double) -100;
-				radioMap.put(AP1, SSAP1);
-			}			
+			mapBuilder.addMapEntry(entry);
 		}
-		System.out.println(radioMap);
-		}
+		//tag et online entry
+			//sorter for signalstyrker (tilføj -100 til dem der mangler)
+		//hent ét offline entry
+			//sorter for signalstyrker (tilføj -100 til dem der mangler)
+		//lav matematik
+			//gem geopos + distance i HashMap<Double,GeoPos>
+		//REPEAT for alle online entries
+		//Sort efter HashMap efter distance og pluk k antal ud. 
+		//lav k -nearest formel, hvis k>1
+		System.out.println(mapBuilder.radioMap);
+	}
 		
 }
