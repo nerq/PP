@@ -140,7 +140,7 @@ public class Test {
 		    avgErrorX = avgErrorX + errorX;
 		    avgErrorY = avgErrorY + errorY;
 		}
-		System.out.println("Avg. error X: " + avgErrorX/distances.size() + " Avg. error Y: " + avgErrorY/distances.size());
+		System.out.println("Avg. error: " + (avgErrorX/distances.size() + avgErrorY/distances.size())/2);
 	}
 	
 	private static HashMap sortByValues(HashMap map) { 
