@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
@@ -30,12 +31,6 @@ public class Test {
 		List<TraceEntry> onlineTrace = tg.getOnline();
 		List<TraceEntry> offlineTrace = tg.getOffline();
 		
-		//Create offline map
-		/*for(TraceEntry entry: offlineTrace) {	
-			mapBuilder.addMapEntry(entry);
-		}*/
-		
-		//
 		HashMap<GeoPosition, Map<MACAddress, Double>> onlineMap = new HashMap<GeoPosition, Map<MACAddress, Double>>();
 		for(TraceEntry entry: onlineTrace){			
 			HashMap<MACAddress, Double> knownMac = new HashMap<MACAddress, Double>(){{
@@ -90,6 +85,9 @@ public class Test {
 			offlineMap.put(entry.getGeoPosition(), knownMac);
 		}
 		
+		
+		Double avgErrorX = (double) 0;
+		Double avgErrorY = (double) 0;
 		HashMap<GeoPosition, Map<GeoPosition, Double>> distances = new HashMap<GeoPosition, Map<GeoPosition, Double>>();
 		for(Entry<GeoPosition, Map<MACAddress, Double>> value : onlineMap.entrySet()){
 			ArrayList<Double> onlineValues = new ArrayList<Double>();
@@ -106,10 +104,43 @@ public class Test {
 				}
 			innerDistances = sortByValues(innerDistances);
 			distances.put(value.getKey(), innerDistances);
+			final Set<Entry<GeoPosition, Double>> mapValues = innerDistances.entrySet();
+		    final int maplength = mapValues.size();
+		    final Entry<GeoPosition,Double>[] test = new Entry[maplength];
+		    mapValues.toArray(test);
+		    int k = 1;
+		    double x = (double) 0, y = (double) 0;
+		    for(int i = 0; i < k ; i++)
+		    {
+		    	x = x + test[k].getKey().getX();
+		    	y = y + test[k].getKey().getY();
+		    }
+		    GeoPosition average = new GeoPosition();
+		    x = x/k;
+		    y = y/k;
+		    average.setX(x);
+		    average.setY(y);
+		    
+		    double errorX, errorY, onlineX, onlineY;
+		    onlineX = value.getKey().getX();
+		    onlineY = value.getKey().getY();
+		    if(onlineX > x){
+		    	errorX = onlineX-x;
+		    }
+		    else{
+		    	errorX = x-onlineX;
+		    }
+		    if(onlineY > y){
+		    	errorY = onlineY-y;
+		    }
+		    else{
+		    	errorY = y-onlineY;
+		    }
+		    //System.out.println("Online Location: " + value.getKey()+ " and the k-nearest Offline Location: " + average + " Error X: " + errorX + " and error Y:" + errorY);
+		    avgErrorX = avgErrorX + errorX;
+		    avgErrorY = avgErrorY + errorY;
 		}
-		
-		System.out.println(distances.values().iterator().next());
-		
+		System.out.println("Avg. error X: " + avgErrorX/distances.size() + " Avg. error Y: " + avgErrorY/distances.size());
 	}
 	
 	private static HashMap sortByValues(HashMap map) { 
