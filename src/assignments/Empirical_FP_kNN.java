@@ -22,7 +22,7 @@ import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 
-public class Test {
+public class Empirical_FP_kNN {
 	public static void main(String[] args) {
 		System.out.println("start!");
 		int largeSize = 100;
@@ -33,22 +33,20 @@ public class Test {
 		List<TraceEntry> onlineTrace = tg.getOnline();
 		List<TraceEntry> offlineTrace = tg.getOffline();
 		
-		final Double defaultSignal = (double) 0;
-		
 		HashMap<GeoPosition, Map<MACAddress, Double>> onlineMap = new HashMap<GeoPosition, Map<MACAddress, Double>>();
 		for(TraceEntry entry: onlineTrace){			
 			HashMap<MACAddress, Double> knownMac = new HashMap<MACAddress, Double>(){{
-				put(MACAddress.parse("00:11:88:28:5E:E0"), defaultSignal); 
-				put(MACAddress.parse("00:16:B6:B7:5D:8C"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:B1:97:81"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:B1:97:8A"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:3B:C7:C6"), defaultSignal);
-				put(MACAddress.parse("00:14:6C:62:CA:A4"), defaultSignal);
-				put(MACAddress.parse("00:16:B6:B7:5D:9B"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:B1:97:8D"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:B1:7C:57"), defaultSignal);
-				put(MACAddress.parse("00:16:B6:B7:5D:8F"), defaultSignal);
-				put(MACAddress.parse("00:14:BF:B1:7C:54"), defaultSignal);
+				put(MACAddress.parse("00:11:88:28:5E:E0"), (double) -100); 
+				put(MACAddress.parse("00:16:B6:B7:5D:8C"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:81"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:8A"), (double) -100);
+				put(MACAddress.parse("00:14:BF:3B:C7:C6"), (double) -100);
+				put(MACAddress.parse("00:14:6C:62:CA:A4"), (double) -100);
+				put(MACAddress.parse("00:16:B6:B7:5D:9B"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:8D"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:7C:57"), (double) -100);
+				put(MACAddress.parse("00:16:B6:B7:5D:8F"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:7C:54"), (double) -100);
 			}};
 			LinkedList<MACAddress> listOfMacInTrace = new LinkedList<MACAddress>();
 				listOfMacInTrace.addAll(entry.getSignalStrengthSamples().getSortedAccessPoints());
@@ -60,12 +58,37 @@ public class Test {
 					}
 			}
 			onlineMap.put(entry.getGeoPosition(), knownMac);
-			
+		}
+		
+		HashMap<GeoPosition, Map<MACAddress, Double>> offlineMap = new HashMap<GeoPosition, Map<MACAddress, Double>>();
+		for(TraceEntry entry: offlineTrace){			
+			HashMap<MACAddress, Double> knownMac = new HashMap<MACAddress, Double>(){{
+				put(MACAddress.parse("00:11:88:28:5E:E0"), (double) -100); 
+				put(MACAddress.parse("00:16:B6:B7:5D:8C"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:81"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:8A"), (double) -100);
+				put(MACAddress.parse("00:14:BF:3B:C7:C6"), (double) -100);
+				put(MACAddress.parse("00:14:6C:62:CA:A4"), (double) -100);
+				put(MACAddress.parse("00:16:B6:B7:5D:9B"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:97:8D"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:7C:57"), (double) -100);
+				put(MACAddress.parse("00:16:B6:B7:5D:8F"), (double) -100);
+				put(MACAddress.parse("00:14:BF:B1:7C:54"), (double) -100);
+			}};
+			LinkedList<MACAddress> listOfMacInTrace = new LinkedList<MACAddress>();
+				listOfMacInTrace.addAll(entry.getSignalStrengthSamples().getSortedAccessPoints());
+			Iterator<MACAddress> listIterator = listOfMacInTrace.iterator();
+			while(listIterator.hasNext()){
+					MACAddress currentMac = listIterator.next();
+					if(knownMac.containsKey(currentMac)){
+						knownMac.put(currentMac, entry.getSignalStrengthSamples().getAverageSignalStrength(currentMac));
+					}
+			}
+			offlineMap.put(entry.getGeoPosition(), knownMac);
 		}
 		
 		
-		Double avgErrorX = (double) 0;
-		Double avgErrorY = (double) 0;
+		Double avgError = (double) 0;
 		HashMap<GeoPosition, Map<GeoPosition, Double>> distances = new HashMap<GeoPosition, Map<GeoPosition, Double>>();
 		for(Entry<GeoPosition, Map<MACAddress, Double>> value : onlineMap.entrySet()){
 			ArrayList<Double> onlineValues = new ArrayList<Double>();
@@ -73,19 +96,13 @@ public class Test {
 				onlineValues.add(value2.getValue());
 			}
 			HashMap<GeoPosition, Double> innerDistances = new HashMap<GeoPosition, Double>();
-			for(Entry<GeoPosition, Map<MACAddress, Double>> value3 : onlineMap.entrySet()){
-				Double estimatedValues = null;
+			for(Entry<GeoPosition, Map<MACAddress, Double>> value3 : offlineMap.entrySet()){
+				ArrayList<Double> offlineValues = new ArrayList<Double>();
 				for(Entry<MACAddress, Double> value4 : value3.getValue().entrySet()){
-					Double Pd0 = (double) 1;
-					Double signalStrength = value4.getValue();
-					Double n = 3.415;
-					Double d = value.getKey().distance(value3.getKey());
-					Double calculatedModelDistance;
-					calculatedModelDistance = Pd0 * signalStrength - 10*n*Math.log(d/Pd0);
-					estimatedValues = calculatedModelDistance;
+					offlineValues.add(value4.getValue());
+					}
+				innerDistances.put(value3.getKey(), Helpers.EuclidianDistanceAll(onlineValues, offlineValues));
 				}
-				innerDistances.put(value3.getKey(), estimatedValues);
-			}
 			innerDistances = sortByValues(innerDistances);
 			distances.put(value.getKey(), innerDistances);
 			final Set<Entry<GeoPosition, Double>> mapValues = innerDistances.entrySet();
@@ -104,29 +121,12 @@ public class Test {
 		    y = y/k;
 		    average.setX(x);
 		    average.setY(y);
-		    
-		    double errorX, errorY, onlineX, onlineY;
-		    onlineX = value.getKey().getX();
-		    onlineY = value.getKey().getY();
-		    if(onlineX > x){
-		    	errorX = onlineX-x;
-		    }
-		    else{
-		    	errorX = x-onlineX;
-		    }
-		    if(onlineY > y){
-		    	errorY = onlineY-y;
-		    }
-		    else{
-		    	errorY = y-onlineY;
-		    }
-		    avgErrorX = avgErrorX + errorX;
-		    avgErrorY = avgErrorY + errorY;
+		    average.setZ(0);
+		    avgError = average.distance(value.getKey());		    
 		}
-		System.out.println((avgErrorX/distances.size() + avgErrorY/distances.size())/2);
+		System.out.println(avgError);
 	};
-}
-
+	}
 	private static HashMap sortByValues(HashMap map) { 
 	       List list = new LinkedList(map.entrySet());
 	       // Defined Custom Comparator here
