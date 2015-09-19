@@ -25,7 +25,7 @@ import org.pi4.locutil.trace.TraceEntry;
 public class Empirical_FP_kNN {
 	public static void main(String[] args) {
 		System.out.println("start!");
-		int largeSize = 100;
+		int largeSize = 5;
 		for(int penis = 0 ; penis < largeSize ; penis++){
 		TraceGenerator tg = Helpers.createTraceGenerator(25, 5);
 		tg.generate();
@@ -84,6 +84,12 @@ public class Empirical_FP_kNN {
 						knownMac.put(currentMac, entry.getSignalStrengthSamples().getAverageSignalStrength(currentMac));
 					}
 			}
+			for (Map.Entry<MACAddress, Double> anotherEntry : knownMac.entrySet()) {
+			    if(anotherEntry.getValue().equals((double)-100))
+			    	{
+			    	//knownMac.remove(anotherEntry.getKey());
+			    	}
+			}
 			offlineMap.put(entry.getGeoPosition(), knownMac);
 		}
 		
@@ -122,9 +128,9 @@ public class Empirical_FP_kNN {
 		    average.setX(x);
 		    average.setY(y);
 		    average.setZ(0);
-		    avgError = average.distance(value.getKey());		    
+		    avgError = avgError + average.distance(value.getKey());		    
 		}
-		System.out.println(avgError);
+		System.out.println(avgError/distances.size());
 	};
 	}
 	private static HashMap sortByValues(HashMap map) { 

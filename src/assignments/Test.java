@@ -24,8 +24,9 @@ import org.pi4.locutil.trace.TraceEntry;
 
 public class Test {
 	public static void main(String[] args) {
+		Double avgError = (double) 0;
 		System.out.println("start!");
-		int largeSize = 100;
+		int largeSize = 5;
 		for(int penis = 0 ; penis < largeSize ; penis++){
 		TraceGenerator tg = Helpers.createTraceGenerator(25, 5);
 		tg.generate();
@@ -63,9 +64,6 @@ public class Test {
 			
 		}
 		
-		
-		Double avgErrorX = (double) 0;
-		Double avgErrorY = (double) 0;
 		HashMap<GeoPosition, Map<GeoPosition, Double>> distances = new HashMap<GeoPosition, Map<GeoPosition, Double>>();
 		for(Entry<GeoPosition, Map<MACAddress, Double>> value : onlineMap.entrySet()){
 			ArrayList<Double> onlineValues = new ArrayList<Double>();
@@ -104,26 +102,10 @@ public class Test {
 		    y = y/k;
 		    average.setX(x);
 		    average.setY(y);
-		    
-		    double errorX, errorY, onlineX, onlineY;
-		    onlineX = value.getKey().getX();
-		    onlineY = value.getKey().getY();
-		    if(onlineX > x){
-		    	errorX = onlineX-x;
-		    }
-		    else{
-		    	errorX = x-onlineX;
-		    }
-		    if(onlineY > y){
-		    	errorY = onlineY-y;
-		    }
-		    else{
-		    	errorY = y-onlineY;
-		    }
-		    avgErrorX = avgErrorX + errorX;
-		    avgErrorY = avgErrorY + errorY;
+		    average.setZ(0);
+		    avgError = average.distance(value.getKey());
 		}
-		System.out.println((avgErrorX/distances.size() + avgErrorY/distances.size())/2);
+		System.out.println(avgError/distances.size());
 	};
 }
 
