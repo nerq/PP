@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
+import org.pi4.locutil.PositioningError;
 import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
