@@ -23,7 +23,7 @@ import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 
-public class Test2 {
+public class Model_FP_kNN {
 	public static void main(String[] args) {
 		System.out.println("start!");
 		int largeSize = 100;
@@ -169,7 +169,7 @@ public class Test2 {
 			    final int maplength = mapValues.size();
 			    final Entry<GeoPosition,Double>[] test = new Entry[maplength];
 			    mapValues.toArray(test);
-			    int k = 1;
+			    int k = 3;
 			    double x = (double) 0, y = (double) 0;
 			    	for(int i = 0; i < k ; i++)
 		    		{
