@@ -141,7 +141,7 @@ public class Test2 {
 									}
 								else
 									{
-										onlineValues.add((double) -80);
+										onlineValues.add((double) -96);
 										breakValue++;
 									}
 							}
