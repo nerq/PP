@@ -1,7 +1,11 @@
 package assignments;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,8 +28,19 @@ import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 
 public class Empirical_FP_kNN {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Please enter desired K-value: ");
+        int k = 0;
+        boolean countA = false;
+        try {
+        	k = Integer.parseInt(reader.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+        System.out.println("You entered a K-value of : " + k);
 		System.out.println("start!");
+		final ArrayList<String[]> averageList = new ArrayList<String[]>();
 		int largeSize = 100;
 		for(int penis = 0 ; penis < largeSize ; penis++)
 			{
@@ -122,7 +137,6 @@ public class Empirical_FP_kNN {
 			    final int maplength = mapValues.size();
 			    final Entry<GeoPosition,Double>[] test = new Entry[maplength];
 			    mapValues.toArray(test);
-			    int k = 3;
 			    double x = (double) 0, y = (double) 0;
 			    	for(int i = 0; i < k ; i++)
 			    		{
@@ -136,9 +150,34 @@ public class Empirical_FP_kNN {
 					    average.setY(y);
 					    average.setZ(0);
 					    System.out.println(value.getKey().distance(average));
+					    averageList.add(new String[] {String.valueOf(value.getKey().distance(average))});
 				}
 			}
 		}
+		
+		//String content = averageList.toString();
+		//String location = "C:/";
+		File file = new File("Empirical-K" + k + ".txt");
+
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(file.getAbsoluteFile(), false);
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		for (String[] arr: averageList){
+			String appender = "";
+			for(String s : arr){
+				bw.write(appender + s);
+			}
+			bw.write(System.lineSeparator());
+			bw.flush();
+		}
+		
+		bw.close();
+		System.out.println("All done! File with average error distances added to disk!");
+
 	}
 	
 	private static HashMap sortByValues(HashMap map) { 
