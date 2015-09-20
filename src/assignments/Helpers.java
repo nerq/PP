@@ -82,6 +82,23 @@ public class Helpers {
 		return Math.sqrt(Math.pow(ss1 - e1,2) + Math.pow(ss2 - e2,2) + Math.pow(ss3 - e3, 2) + Math.pow(ss4 - e4,2) + Math.pow(ss5 - e5,2) + Math.pow(ss6 - e6,2) + Math.pow(ss7 - e7,2) + Math.pow(ss8 - e8,2) + Math.pow(ss9 - e9,2) + Math.pow(ss10 - e10,2) + Math.pow(ss11 - e11,2));
 	}
 	
+	public static double EuclidianDistanceArray(List<Double> array, List<Double> array2){
+		if(array.size() == array2.size())
+			{
+				Double calculated = (double) 0;
+				for(int i = 0 ; i < array.size() ; i++)
+					{
+						calculated = calculated + Math.pow(array.get(i) - array2.get(i), 2);
+					}
+				return Math.sqrt(calculated);
+			}
+		else
+			{
+				System.out.println("All is baaad!");
+				return 0;
+			}
+	}
+	
 	public static GeoPosition getGeoPosOfAP(MACAddress mac){
 		//list of all mac addresses
 		//# AP Positions in coordinate system drawn in MannheimDatasets.png

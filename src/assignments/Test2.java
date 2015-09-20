@@ -22,7 +22,7 @@ import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 
-public class Empirical_FP_kNN {
+public class Test2 {
 	public static void main(String[] args) {
 		System.out.println("start!");
 		int largeSize = 100;
